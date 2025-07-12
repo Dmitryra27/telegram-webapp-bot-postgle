@@ -5,3 +5,8 @@ env/
 *.env
 *.xml
 *.iml
+.idea
+/old/index_old.html
+old/server_old.py
+old/server_worked.py
+/old

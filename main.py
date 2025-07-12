@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from ai_utils import generate_text
 from db_utils import can_use_bot, update_subscription
-from payments import is_stripe_configured, create_stripe_checkout_session
+from payments import is_stripe_configured, create_stripe_checkout_session, send_stars_payment
 
 import os
 from dotenv import load_dotenv
