@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Chat</title>
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<h1>💬 AI Chat</h1>
+<textarea id="prompt" placeholder="Введите запрос..."></textarea>
+<br>
+<button onclick="send()">Отправить</button>
+<p id="response"></p>
+
+<script>
+    async function send() {
+        const prompt = document.getElementById('prompt').value;
+        const res = await fetch('/api/generate?prompt=' + encodeURIComponent(prompt));
+        const text = await res.text();
+        document.getElementById('response').innerHTML = text;
+    }
+</script>
+</body>
+</html>
