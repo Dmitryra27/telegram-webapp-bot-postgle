@@ -1,12 +1,12 @@
 ---
-title: Flask
-description: A popular minimal server framework for Python
+title: Telegram WebApp using YandexGPT AI and PostgreSQL
+description: 
 tags:
   - python
   - flask
 ---
 
-# Python Flask Example with WebApp and YandexGPT AI
+# Python Telegram WebApp, YandexGPT AI and PostgreSQL
 
 This is a [Flask](https://flask.palletsprojects.com/en/1.1.x/) app that serves YandexGPT AI.
 

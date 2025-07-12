@@ -1,6 +1,11 @@
 Flask==3.0.0
 python-dotenv==1.0.1
 gunicorn
-
 aiogram~=3.4.0
-requests~=2.31.0
+requests>=2.32.4
+stripe==6.0.0
+sqlalchemy
+asyncpg
+redis
+sqlalchemy==2.0.0
+psycopg2-binary==2.9.9

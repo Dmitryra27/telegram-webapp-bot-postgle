@@ -1,64 +1,46 @@
 from flask import Flask, request, Response
+from ai_utils import generate_text
+from db_utils import can_use_bot
 import os
-import requests
-from dotenv import load_dotenv
 
-load_dotenv()
+from payments import handle_stripe_webhook
 
 app = Flask(__name__)
 
-# === YandexGPT API ===
-FOLDER_ID = os.getenv("YANDEX_FOLDER_ID")
-IAM_TOKEN = os.getenv("YANDEX_API_KEY")
-
-def generate_text(prompt: str) -> str:
-    headers = {
-        "Authorization": f"API-KEY {IAM_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
-    data = {
-        "modelUri": f"gpt://{FOLDER_ID}/yandexgpt",
-        "completionOptions": {
-            "stream": False,
-            "temperature": 0.6,
-            "maxTokenCount": 1000
-        },
-        "messages": [
-            {
-                "role": "user",
-                "text": prompt
-            }
-        ]
-    }
-
-    response = requests.post(
-        "https://llm.api.cloud.yandex.net/foundationModels/v1/completion",
-        headers=headers,
-        json=data
-    )
-
-    if response.status_code == 200:
-        return response.json()['result']['alternatives'][0]['message']['text']
-    else:
-        return f"Ошибка YandexGPT: {response.status_code}, {response.text}"
-
-# === Flask Routes ===
 @app.route('/')
 def home():
     html = open('index.html', encoding='utf-8').read()
     return Response(html, content_type='text/html; charset=utf-8')
 
+@app.route('/stripe/webhook', methods=['POST'])
+async def stripe_webhook():
+    result, code = await handle_stripe_webhook(request)
+    return result, code
+
+@app.route('/success')
+def success():
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+
+    if user_id and session_id:
+        return f"<h1>Спасибо за покупку, пользователь {user_id}!</h1>"
+    else:
+        return "<h1>Оплата прошла успешно, но данные пользователя не получены.</h1>"
+
 @app.route('/api/generate')
 def generate():
     prompt = request.args.get('prompt')
+    user_id = request.args.get('user_id', 'default')
     if not prompt:
         return "Нет запроса", 400
+    if not can_use_bot(user_id):
+        return "Подписка закончилась", 402
+
     try:
-        result = generate_text(prompt)
+        result = generate_text(prompt, user_id)
         return f"<p>{result}</p>"
     except Exception as e:
-        return f"<p>Ошибка сервера: {str(e)}</p>", 500
+        return f"<p>Ошибка: {str(e)}</p>", 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

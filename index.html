@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>AI Chat</title>
-    <link rel="stylesheet" href="./style.css">
-
 </head>
 <body>
 <h1>💬 AI Chat</h1>
-<textarea id="prompt" placeholder="Введите запрос..."></textarea>
-<br>
+<textarea id="prompt" placeholder="Введите ваш запрос..."></textarea><br>
 <button onclick="send()">Отправить</button>
 <p id="response"></p>
 
+<script src="https://telegram.org/js/telegram-web-app.js "></script>
 <script>
     async function send() {
         const prompt = document.getElementById('prompt').value;
-        const res = await fetch('/api/generate?prompt=' + encodeURIComponent(prompt));
-        const text = await res.text();
-        document.getElementById('response').innerHTML = text;
+        const userId = Telegram.WebApp.initDataUnsafe.user.id;
+
+        const res = await fetch(`/api/generate?prompt=${encodeURIComponent(prompt)}&user_id=${userId}`);
+        if (res.status === 402) {
+            alert("Подписка закончилась");
+            window.location.href = "/subscribe";
+        } else {
+            const text = await res.text();
+            document.getElementById('response').innerHTML = text;
+        }
     }
 </script>
 </body>
