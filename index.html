@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>AI Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" />
 </head>
 <body>
-<h1>💬 AI Chat</h1>
+<h1>💬 AI Chat - @AI_DB_PaymentBott</h1>
 <textarea id="prompt" placeholder="Введите ваш запрос..."></textarea><br>
 <button onclick="send()">Отправить</button>
 <p id="response"></p>
@@ -21,8 +23,7 @@
             alert("Подписка закончилась");
             window.location.href = "/subscribe";
         } else {
-            const text = await res.text();
-            document.getElementById('response').innerHTML = text;
+            document.getElementById('response').innerHTML = await res.text();
         }
     }
 </script>

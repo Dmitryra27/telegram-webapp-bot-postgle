@@ -1,2 +1,0 @@
-[build]
-command = "pip install -r requirements.txt && alembic upgrade head && gunicorn server:app"
