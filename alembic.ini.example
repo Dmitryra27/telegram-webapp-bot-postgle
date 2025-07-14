@@ -1,0 +1,2 @@
+# alembic.ini.example
+sqlalchemy.url = ${DATABASE_URL}

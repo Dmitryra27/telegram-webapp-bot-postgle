@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 # Получаем URL из переменной окружения
 DATABASE_URL = os.getenv("DATABASE_URL")
-#print(f"DATABASE_URL = {DATABASE_URL}")
+
 
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL не найден. Пожалуйста, установите переменную окружения.")
@@ -37,12 +37,6 @@ try:
     # Проверяем подключение
     engine.connect().close()
     print("✅ Подключение к БД прошло успешно")
-    # Попытаемся создать таблицы
-    try:
-        Base.metadata.create_all(engine)
-        print("✅ Таблицы успешно созданы или уже существуют")
-    except Exception as e:
-        print(f"⚠️ Не удалось создать таблицы: {e}")
 
     SessionLocal = sessionmaker(bind=engine)
 
