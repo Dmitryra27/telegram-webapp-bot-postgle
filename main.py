@@ -53,7 +53,7 @@ async def subscribe(query):
 async def cmd_subscribe(message: Message):
     if not is_stripe_configured():
         await message.answer("❌ Оплата временно недоступна: администратор не указал Stripe Secret Key.")
-        return
+        #return
 
     user_id = str(message.from_user.id)
     url = create_stripe_checkout_session(user_id, price_usd_cents=999)  # 9.99 USD
