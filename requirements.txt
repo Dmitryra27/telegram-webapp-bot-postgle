@@ -4,8 +4,9 @@ gunicorn
 aiogram~=3.4.0
 requests>=2.32.4
 stripe==6.0.0
-sqlalchemy
-asyncpg
+asyncpg==0.30.0
 redis
 sqlalchemy==2.0.0
 psycopg2-binary==2.9.9
+
+

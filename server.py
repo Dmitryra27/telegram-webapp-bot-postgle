@@ -3,6 +3,7 @@ from ai_utils import generate_text
 from db_utils import can_use_bot
 import os
 
+from db_utils import can_use_bot
 from payments import handle_stripe_webhook
 
 app = Flask(__name__)
