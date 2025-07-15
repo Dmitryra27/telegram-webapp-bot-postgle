@@ -1,0 +1,41 @@
+body {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+#response {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+/* Альтернативный светлый режим */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    #response {
+        background-color: #f0f0f0;
+        color: #000000;
+    }
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}

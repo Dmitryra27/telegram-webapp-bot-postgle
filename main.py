@@ -1,4 +1,4 @@
-import asyncio
+
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from ai_utils import generate_text
@@ -16,6 +16,7 @@ WEBAPP_URL = os.getenv("WEBAPP_URL")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
+
 @dp.message(F.text == "/start")
 async def start(message: Message):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[
@@ -24,19 +25,22 @@ async def start(message: Message):
     ]])
     await message.answer("Добро пожаловать! Используйте WebApp или отправьте сообщение.", reply_markup=keyboard)
 
+
 @dp.message()
 async def handle_message(message: Message):
     user_id = str(message.from_user.id)
 
     if not can_use_bot(user_id):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(text="💳 Оплатить подписку", url=create_stripe_checkout_session())
+            InlineKeyboardButton(text="💳 Оплатить подписку", url=create_stripe_checkout_session(user_id))
         ]])
-        await message.reply("Подписка закончилась. Оплатите подписку, чтобы продолжить использовать бота.", reply_markup=keyboard)
+        await message.reply("Подписка закончилась. Оплатите подписку, чтобы продолжить использовать бота.",
+                            reply_markup=keyboard)
         return
 
     reply = generate_text(message.text, user_id)
     await message.answer(reply)
+
 
 @dp.callback_query(F.data == "subscribe")
 async def subscribe(query):
@@ -46,7 +50,6 @@ async def subscribe(query):
         await query.message.answer("Вы успешно оформили подписку на 30 дней.")
     else:
         await query.message.answer("Ошибка при оплате.")
-
 
 
 @dp.message(F.text == "/subscribe")
@@ -66,9 +69,12 @@ async def cmd_subscribe(message: Message):
     else:
         await message.answer("⚠️ Не удалось создать ссылку для оплаты.")
 
+
 async def main():
     await dp.start_polling(bot)
 
+
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

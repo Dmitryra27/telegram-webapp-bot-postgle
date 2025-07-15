@@ -2,9 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>AI Chat</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon.ico" />
+    <title>AI Chat @AI_DB_PaymentBot </title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="icon" href="static/favicon.ico" />
 </head>
 <body>
 <h1>💬 AI Chat - @AI_DB_PaymentBott</h1>
@@ -16,15 +16,24 @@
 <script>
     async function send() {
         const prompt = document.getElementById('prompt').value;
-        const userId = Telegram.WebApp.initDataUnsafe.user.id;
+        try {
+            const userId = Telegram.WebApp.initDataUnsafe.user.id;
+            console.log("User ID:", userId);// Проверить userId
+            const res = await fetch(`/api/generate?prompt=${encodeURIComponent(prompt)}&user_id=${userId}`);
+            if (res.status === 402) {
+                alert("Подписка закончилась");
+                window.location.href = "/subscribe";
+            } else {
+                document.getElementById('response').innerHTML = await res.text();
+            }
 
-        const res = await fetch(`/api/generate?prompt=${encodeURIComponent(prompt)}&user_id=${userId}`);
-        if (res.status === 402) {
-            alert("Подписка закончилась");
-            window.location.href = "/subscribe";
-        } else {
-            document.getElementById('response').innerHTML = await res.text();
         }
+        catch (error) {
+            console.log("Ошибка получения User ID:", error);
+            document.getElementById('response').innerHTML = 'Откройте приложение в Telegram';
+        }
+
+
     }
 </script>
 </body>
