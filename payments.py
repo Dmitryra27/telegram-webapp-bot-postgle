@@ -35,7 +35,7 @@ def create_stripe_checkout_session(user_id: str, price_usd_cents: int = 999):
             }],
             mode="subscription" if price_usd_cents != 999 else "payment",
             success_url=f"https://your-webapp.up.railway.app/success?session_id={{CHECKOUT_SESSION_ID}}&user_id={user_id}",
-            cancel_url=" https://your-webapp.up.railway.app/cancel ",
+            cancel_url=" https://your-webapp.up.railway.app/cancel",
         )
         return session.url
     except Exception as e:

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подписка</title>
+    <link rel="stylesheet" href="./static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1>💳 Подписка на AI-чат</h1>
+
+<p><strong>Для использования этого сервиса требуется активная подписка.</strong></p>
+<p>Пожалуйста, откройте это приложение через Telegram</p>
+
+<div class="payment-options">
+    <!--button onclick="payStars()">Оплатить звёздами 🌟</button-->
+    <button onclick="openPayment()">Оплатить через Yandex Касса</button>
+</div>
+
+<p id="status" style="color: red;"></p>
+
+<script src="https://telegram.org/js/telegram-web-app.js "></script>
+<script>
+    // Проверяем, доступны ли звёзды у бота
+    function payStars() {
+        if (Telegram.WebApp && Telegram.WebApp.send_stars_transaction) {
+            const user_id = Telegram.WebApp.initDataUnsafe.user.id;
+            fetch(`/api/subscribe?user_id=${user_id}`, { method: 'POST' })
+                .then(res => res.text())
+                .then(text => {
+                    alert("Спасибо за оплату !");
+                    window.location.href = "/";
+                })
+                .catch(err => {
+                    document.getElementById('status').innerText = "Ошибка оплаты";
+                });
+        } else {
+            document.getElementById('status').innerText = "Оплата временно не доступна.";
+        }
+    }
+
+    function openPayment() {
+        window.location.href = "/payment/yandex-checkout";
+    }
+</script>
+</body>
+</html>
+

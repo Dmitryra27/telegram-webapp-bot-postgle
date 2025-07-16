@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, func
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, func, cast
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime, timedelta, timezone
@@ -22,7 +22,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     telegram_id = Column(String, unique=True, nullable=False)
     subscription_type = Column(String(50), default='free')
-    subscription_end = Column(DateTime, default=datetime.now(timezone.utc) - timedelta(days=1))
+    subscription_end = Column(DateTime, default=datetime.now(timezone.utc) + timedelta(days=15))
     request_count = Column(Integer, default=0)
     created_at = Column(DateTime, default=func.now())
 
@@ -55,7 +55,7 @@ def get_user(telegram_id: str):
         raise Exception("База данных недоступна")
 
     session = get_session()
-    user = session.query(User).filter(User.telegram_id == telegram_id).first()
+    user = session.query(User).filter(User.telegram_id == cast(telegram_id, String)).first()
     if not user:
         user = User(telegram_id=telegram_id)
         session.add(user)
@@ -68,7 +68,7 @@ def update_subscription(telegram_id: str, days: int = 30):
         raise Exception("База данных недоступна")
 
     session = get_session()
-    user = session.query(User).filter(User.telegram_id == telegram_id).first()
+    user = session.query(User).filter(User.telegram_id == cast(telegram_id, String)).first()
     if user:
         user.subscription_end = datetime.now(timezone.utc) + timedelta(days=days)
         session.commit()

@@ -1,5 +1,5 @@
 import asyncio
-from flask import Flask, request, Response, send_from_directory
+from flask import Flask, request, Response, send_from_directory, redirect
 from ai_utils import generate_text
 from db_utils import can_use_bot
 import os
@@ -38,6 +38,15 @@ def success():
     else:
         return "<h1>Оплата прошла успешно, но данные пользователя не получены.</h1>"
 
+@app.route('/cancel')
+def cancel():
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+
+    if user_id and session_id:
+        return f"<h1>Cancel, пользователь {user_id}!</h1>"
+    else:
+        return "<h1>Cancel, незнакомец. Зайди используя телеграмм и оформи подписку</h1>"
 
 @app.route('/api/generate')
 def generate():
@@ -57,15 +66,18 @@ def generate():
 
 @app.route('/subscribe')
 def subscribe():
+    subscribe1 = open('subscribe.html', encoding='utf-8').read()
+    return Response(subscribe1, content_type='text/html; charset=utf-8')
+
+# или редирект на Stripe / Yookassa
+@app.route('/payment/yandex-checkout')
+def yandex_checkout():
+    #return redirect("https://checkout.kassa.yandex.ru/your_payment_link")
     return """
-    <h1>💳 Подписка недоступна</h1>
-    <p>Подписка закончилась. Пожалуйста, оплатите подписку.</p>
+    <h2>Редирект на Yandex Касса...</h2>
+    <p>В реальной версии здесь будет ссылка на оплату через Yandex.Checkout</p>
     """
-    # return redirect(" https://your-stripe-checkout-link.com ")
 
-
-#if __name__ == '__main__':
-#    app.run(host='0.0.0.0', port=8080)
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(asyncio.gather(
